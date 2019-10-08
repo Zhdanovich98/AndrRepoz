@@ -4,11 +4,13 @@ import android.app.ListActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,6 +26,17 @@ public class ActivityContacs extends ListActivity implements AdapterView.OnItemL
 
     private ArrayAdapter<String> mAdapter;
     private ArrayList<String> catNamesList = new ArrayList<>(Arrays.asList(catNamesArray));
+
+
+    void seeContact(){
+        Intent intentForAddContact = new Intent(this, ActivityContact.class);
+        startActivity(intentForAddContact);
+    }
+
+    void redactContact(){
+        Intent intentForAddContact = new Intent(this, ActivityRedact.class);
+        startActivity(intentForAddContact);
+    }
 
 
     @Override
@@ -43,38 +56,49 @@ public class ActivityContacs extends ListActivity implements AdapterView.OnItemL
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
-
-        Intent intentForSeeContact = new Intent(this, ActivityContact.class);
-        startActivity(intentForSeeContact);
-
-
-   /*     super.onListItemClick(l, v, position, id);
-//        Toast.makeText(getApplicationContext(),
-//                "Вы выбрали " + (position + 1) + " элемент", Toast.LENGTH_SHORT).show();
-
-        Toast.makeText(getApplicationContext(),
-                "Вы выбрали " + l.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();*/
+         seeContact();
 }
 
     @Override
-    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        String selectedItem = parent.getItemAtPosition(position).toString();
+    public boolean onItemLongClick(final AdapterView<?> parent, View v, final int position, long id) {
 
-        mAdapter.remove(selectedItem);
-        mAdapter.notifyDataSetChanged();
 
-        Toast.makeText(getApplicationContext(),
-                selectedItem + " удалён.",
-                Toast.LENGTH_SHORT).show();
+        PopupMenu popupMenu = new PopupMenu(this, v);
+        popupMenu.inflate(R.menu.popupmenu);
+        popupMenu
+                .setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.menu1:
+                                seeContact();
+                                return true;
+                            case R.id.menu2:
+                                redactContact();
+                                return true;
+                            case R.id.menu3:
+                                String selectedItem = parent.getItemAtPosition(position).toString();
+                                mAdapter.remove(selectedItem);
+                                mAdapter.notifyDataSetChanged();
+                                Toast.makeText(getApplicationContext(),
+                                selectedItem + " удалён.",
+                                Toast.LENGTH_SHORT).show();
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+                });
+        popupMenu.show();
         return true;
     }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btnAddContact:
-                Intent intentForAddContact = new Intent(this, ActivityRedact.class);
-                startActivity(intentForAddContact);
+                redactContact();
                 break;
             default:
                 break;

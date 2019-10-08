@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ActivityContact"></activity>
+        <activity android:name=".ActivityContact" />
         <activity android:name=".ActivityRedact" />
         <activity android:name=".ActivityContacs">
             <intent-filter>
